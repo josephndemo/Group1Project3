@@ -1,27 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { PlusCircle, Pencil, Trash2, XCircle, Check, Database } from 'lucide-react';
+import { ShieldAlert, PlusCircle, Trash2, BookOpen, Image, Calendar, Hash, FileText } from 'lucide-react';
 
 export default function AdminPanel() {
   const [books, setBooks] = useState([]);
-  const [form, setForm] = useState({ title: '', author: '', genre: 'Sci-Fi', total_pages: 250, publication_year: 2026, description: '' });
-  const [editingId, setEditingId] = useState(null);
-  const [editForm, setEditForm] = useState({ title: '', author: '', genre: '', total_pages: 0, publication_year: 0, description: '' });
+  const [loading, setLoading] = useState(true);
 
-  const fetchInventory = () => {
+  // Form State Vectors
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [genre, setGenre] = useState('');
+  const [description, setDescription] = useState('');
+  const [coverImage, setCoverImage] = useState(''); // 👈 NEW STATE FOR COVER IMAGE URL
+  const [publicationYear, setPublicationYear] = useState('2026');
+  const [totalPages, setTotalPages] = useState('100');
+
+  const fetchBooks = () => {
+    setLoading(true);
     fetch('http://localhost:5555/api/books')
       .then(res => res.json())
       .then(data => setBooks(data))
-      .catch(() => console.error("Could not fetch inventory database grid."));
+      .catch(err => console.error("Error loading admin catalog:", err))
+      .finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchInventory(); }, []);
+  useEffect(() => {
+    fetchBooks();
+  }, []);
 
-  // CREATE WORKFLOW
-  const handleCreateBook = async (e) => {
+  const handleAddBook = async (e) => {
     e.preventDefault();
-    const coverRandomId = Math.floor(Math.random() * 700) + 50;
-    const payload = { ...form, cover_image: `https://picsum.photos/id/${coverRandomId}/400/600` };
+    if (!title.trim() || !author.trim() || !genre.trim()) return;
+
+    const payload = {
+      title: title.trim(),
+      author: author.trim(),
+      genre: genre.trim(),
+      description: description.trim(),
+      cover_image: coverImage.trim() || null, // 👈 APART OF THE INVENTORY DISPATCH PAYLOAD
+      publication_year: parseInt(publicationYear) || 2026,
+      total_pages: parseInt(totalPages) || 100
+    };
 
     const res = await fetch('http://localhost:5555/api/books', {
       method: 'POST',
@@ -31,175 +50,223 @@ export default function AdminPanel() {
     });
 
     if (res.ok) {
-      Swal.fire({ title: 'Book Added!', text: `"${form.title}" registered successfully.`, icon: 'success', confirmButtonColor: '#3b82f6' });
-      setForm({ title: '', author: '', genre: 'Sci-Fi', total_pages: 250, publication_year: 2026, description: '' });
-      fetchInventory();
+      // Clear all text input values upon success
+      setTitle('');
+      setAuthor('');
+      setGenre('');
+      setDescription('');
+      setCoverImage(''); // 👈 CLEAR UPON SUCCESS
+      setPublicationYear('2026');
+      setTotalPages('100');
+      
+      fetchBooks(); // Reload current registry arrays
+      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Inventory record appended!', showConfirmButton: false, timer: 1500 });
     } else {
-      Swal.fire('Error', 'Failed to add entry item. Ensure admin status.', 'error');
+      const errorData = await res.json();
+      Swal.fire('Access Denied', errorData.error || 'Failed to execute administrative update.', 'error');
     }
   };
 
-  // INITIALIZE INLINE UPDATE MODE
-  const startEdit = (book) => {
-    setEditingId(book.id);
-    setEditForm({
-      title: book.title,
-      author: book.author,
-      genre: book.genre,
-      total_pages: book.total_pages,
-      publication_year: book.publication_year,
-      description: book.description || ''
-    });
-  };
-
-  // SUBMIT UPDATE WORKFLOW
-  const handleSaveUpdate = async (bookId) => {
-    const res = await fetch(`http://localhost:5555/api/books/${bookId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(editForm),
-      credentials: 'include'
-    });
-
-    if (res.ok) {
-      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Changes saved cleanly!', showConfirmButton: false, timer: 1500 });
-      setEditingId(null);
-      fetchInventory();
-    } else {
-      Swal.fire('Error', 'Could not apply update metrics.', 'error');
-    }
-  };
-
-  // DELETE WORKFLOW
-  const handleDeleteBook = (bookId, title) => {
-    Swal.fire({
-      title: 'Delete Book Structural Profile?',
-      text: `Are you sure you want to completely erase "${title}"? This drops cascading user tracking assets!`,
+  const handleDeleteBook = async (bookId) => {
+    const confirmation = await Swal.fire({
+      title: 'Are you sure?',
+      text: "Dropping this book from database storage will completely purge all related bookshelf instances and comment arrays!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, purge record',
-      confirmButtonColor: '#ef4444',
-      cancelButtonColor: '#64748b'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const res = await fetch(`http://localhost:5555/api/books/${bookId}`, { method: 'DELETE', credentials: 'include' });
-        if (res.ok) {
-          Swal.fire('Purged!', 'Book erased from database index maps.', 'success');
-          fetchInventory();
-        } else {
-          Swal.fire('Error', 'Failed to execute transactional deletion.', 'error');
-        }
-      }
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete it!'
     });
+
+    if (confirmation.isConfirmed) {
+      const res = await fetch(`http://localhost:5555/api/books/${bookId}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+
+      if (res.ok) {
+        fetchBooks();
+        Swal.fire('Deleted!', 'Book structure dropped clean from database storage grid.', 'success');
+      } else {
+        Swal.fire('Error', 'Failed to remove requested resource entry maps.', 'error');
+      }
+    }
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="space-y-8 animate-fade-in">
       
-      {/* COLUMN 1: FORM CONTROLLER PROFILE */}
-      <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm h-fit space-y-6">
-        <div>
-          <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
-            <PlusCircle className="text-blue-600 w-5 h-5" /> Add Master Profile
-          </h2>
-          <p className="text-xs text-slate-400 mt-0.5">Append fresh parameters to the inventory storage index array.</p>
-        </div>
-
-        <form onSubmit={handleCreateBook} className="space-y-4 text-xs font-medium text-slate-600">
-          <div>
-            <label className="block font-bold text-slate-400 uppercase tracking-wider mb-1">Book Title Name</label>
-            <input type="text" value={form.title} onChange={e => setForm({...form, title: e.target.value})} className="w-full border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:border-blue-500 font-semibold" required />
-          </div>
-          <div>
-            <label className="block font-bold text-slate-400 uppercase tracking-wider mb-1">Author Name</label>
-            <input type="text" value={form.author} onChange={e => setForm({...form, author: e.target.value})} className="w-full border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:border-blue-500 font-semibold" required />
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="block font-bold text-slate-400 uppercase tracking-wider mb-1">Genre</label>
-              <select value={form.genre} onChange={e => setForm({...form, genre: e.target.value})} className="w-full border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:border-blue-500 font-semibold bg-white">
-                {["Sci-Fi", "Fantasy", "Biography", "Technology", "Mystery", "History", "Self-Help", "Fiction"].map(g => <option key={g} value={g}>{g}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block font-bold text-slate-400 uppercase tracking-wider mb-1">Total Pages</label>
-              <input type="number" value={form.total_pages} onChange={e => setForm({...form, total_pages: parseInt(e.target.value) || 0})} className="w-full border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:border-blue-500 font-semibold" required />
-            </div>
-          </div>
-          <div>
-            <label className="block font-bold text-slate-400 uppercase tracking-wider mb-1">Publication Year</label>
-            <input type="number" value={form.publication_year} onChange={e => setForm({...form, publication_year: parseInt(e.target.value) || 0})} className="w-full border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:border-blue-500 font-semibold" required />
-          </div>
-          <div>
-            <label className="block font-bold text-slate-400 uppercase tracking-wider mb-1">Brief Description Summary</label>
-            <textarea rows="3" value={form.description} onChange={e => setForm({...form, description: e.target.value})} className="w-full border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:border-blue-500 font-semibold" placeholder="Describe layout details..."></textarea>
-          </div>
-          <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-3 rounded-xl shadow-sm transition-colors tracking-wide">
-            Commit New Book Record
-          </button>
-        </form>
+      {/* HEADER SECTION */}
+      <div>
+        <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+          <ShieldAlert className="text-amber-500 w-6 h-6" /> Core Administration Console
+        </h2>
+        <p className="text-xs text-slate-400 mt-0.5">Append fresh community library inventory nodes or drop deprecated resource entries.</p>
       </div>
 
-      {/* COLUMN 2 & 3: INVENTORY GRID DASHBOARD LIST */}
-      <div className="lg:col-span-2 bg-white border border-slate-100 rounded-2xl p-6 shadow-sm space-y-4">
-        <div className="flex justify-between items-center">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+        
+        {/* LEFT COMPONENT: CREATION FORM ELEMENT PANEL */}
+        <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-xs xl:col-span-1 space-y-5">
           <div>
-            <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
-              <Database className="text-slate-700 w-5 h-5" /> Database Inventory Index
-            </h2>
-            <p className="text-xs text-slate-400 mt-0.5">Manage live asset records across relational storage clusters.</p>
+            <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5">
+              <PlusCircle className="text-blue-600 w-4 h-4" /> Append Master Record
+            </h3>
+            <p className="text-[11px] text-slate-400 mt-0.5">Populate text properties below to serialize a new book file entry.</p>
           </div>
-          <span className="text-xs font-bold bg-slate-100 px-3 py-1 text-slate-600 rounded-full">{books.length} Total Titles</span>
-        </div>
 
-        <div className="space-y-3 overflow-y-auto max-h-[600px] pr-1">
-          {books.map(book => (
-            <div key={book.id} className="border border-slate-100 rounded-xl p-4 flex gap-4 bg-slate-50 items-center justify-between shadow-sm">
+          <form onSubmit={handleAddBook} className="space-y-4">
+            <div className="grid grid-cols-1 gap-3 text-xs font-bold text-slate-700">
               
-              {editingId === book.id ? (
-                /* INLINE EDIT MODE RENDER */
-                <div className="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-semibold">
-                  <div className="sm:col-span-2"><input type="text" value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} className="w-full p-2 border border-slate-300 rounded-lg text-xs" placeholder="Title" /></div>
-                  <div><input type="text" value={editForm.author} onChange={e => setEditForm({...editForm, author: e.target.value})} className="w-full p-2 border border-slate-300 rounded-lg text-xs" placeholder="Author" /></div>
-                  <div>
-                    <select value={editForm.genre} onChange={e => setEditForm({...editForm, genre: e.target.value})} className="w-full p-2 border border-slate-300 rounded-lg text-xs bg-white">
-                      {["Sci-Fi", "Fantasy", "Biography", "Technology", "Mystery", "History", "Self-Help", "Fiction"].map(g => <option key={g} value={g}>{g}</option>)}
-                    </select>
-                  </div>
-                  <div><input type="number" value={editForm.total_pages} onChange={e => setEditForm({...editForm, total_pages: parseInt(e.target.value) || 0})} className="w-full p-2 border border-slate-300 rounded-lg text-xs" placeholder="Pages" /></div>
-                  <div><input type="number" value={editForm.publication_year} onChange={e => setEditForm({...editForm, publication_year: parseInt(e.target.value) || 0})} className="w-full p-2 border border-slate-300 rounded-lg text-xs" placeholder="Year" /></div>
-                  
-                  <div className="sm:col-span-2 flex justify-end gap-1 pt-1">
-                    <button onClick={() => handleSaveUpdate(book.id)} className="bg-emerald-600 text-white p-2 rounded-lg font-bold flex items-center gap-1 text-[11px]"><Check className="w-3.5 h-3.5" /> Save</button>
-                    <button onClick={() => setEditingId(null)} className="bg-slate-500 text-white p-2 rounded-lg font-bold flex items-center gap-1 text-[11px]"><XCircle className="w-3.5 h-3.5" /> Cancel</button>
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase text-slate-400 tracking-wider">Book Title</label>
+                <input 
+                  type="text" value={title} onChange={e => setTitle(e.target.value)}
+                  placeholder="e.g. Clean Code" required
+                  className="w-full border border-slate-200 rounded-xl p-2.5 font-semibold focus:outline-none focus:border-blue-500 bg-slate-50/30"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase text-slate-400 tracking-wider">Author Name</label>
+                <input 
+                  type="text" value={author} onChange={e => setAuthor(e.target.value)}
+                  placeholder="e.g. Robert C. Martin" required
+                  className="w-full border border-slate-200 rounded-xl p-2.5 font-semibold focus:outline-none focus:border-blue-500 bg-slate-50/30"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase text-slate-400 tracking-wider">Genre Classification</label>
+                  <input 
+                    type="text" value={genre} onChange={e => setGenre(e.target.value)}
+                    placeholder="e.g. Technology" required
+                    className="w-full border border-slate-200 rounded-xl p-2.5 font-semibold focus:outline-none focus:border-blue-500 bg-slate-50/30"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase text-slate-400 tracking-wider">Total Pages</label>
+                  <div className="relative flex items-center">
+                    <input 
+                      type="number" value={totalPages} onChange={e => setTotalPages(e.target.value)}
+                      min="1" required
+                      className="w-full border border-slate-200 rounded-xl p-2.5 pl-8 font-semibold focus:outline-none focus:border-blue-500 bg-slate-50/30"
+                    />
+                    <Hash className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
                   </div>
                 </div>
-              ) : (
-                /* STANDARD READ-ONLY INVENTORY ITEM DISPLAY */
-                <>
-                  <div className="flex items-center gap-3 min-w-0">
-                    <img src={book.cover_image} alt={book.title} className="w-12 h-16 object-cover rounded-lg bg-slate-200 border shadow-sm" />
-                    <div className="min-w-0">
-                      <h4 className="font-extrabold text-slate-800 text-sm truncate">{book.title}</h4>
-                      <p className="text-xs text-slate-400 font-semibold">by {book.author} • <span className="text-blue-600">{book.genre}</span></p>
-                      <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider">{book.total_pages} Pages ({book.publication_year})</p>
-                    </div>
-                  </div>
+              </div>
 
-                  <div className="flex gap-1 shrink-0">
-                    <button onClick={() => startEdit(book)} className="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-100 rounded-xl transition-all">
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => handleDeleteBook(book.id, book.title)} className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 rounded-xl transition-all">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </>
-              )}
-              
+              {/* 👇 NEW FEATURE PANEL FIELD: IMAGE COVER LINK */}
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                  <Image className="w-3 h-3 text-slate-400" /> Cover Artwork Image URL
+                </label>
+                <input 
+                  type="url" value={coverImage} onChange={e => setCoverImage(e.target.value)}
+                  placeholder="e.g. https://images.unsplash.com/... or leave blank for default"
+                  className="w-full border border-slate-200 rounded-xl p-2.5 font-semibold focus:outline-none focus:border-blue-500 bg-slate-50/30 text-slate-600 placeholder:text-slate-300"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase text-slate-400 tracking-wider">Publication Year</label>
+                <div className="relative flex items-center">
+                  <input 
+                    type="number" value={publicationYear} onChange={e => setPublicationYear(e.target.value)}
+                    className="w-full border border-slate-200 rounded-xl p-2.5 pl-8 font-semibold focus:outline-none focus:border-blue-500 bg-slate-50/30"
+                  />
+                  <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase text-slate-400 tracking-wider">Abstract Description Summary</label>
+                <textarea 
+                  rows="3" value={description} onChange={e => setDescription(e.target.value)}
+                  placeholder="Provide an overview index snippet of the book content themes..."
+                  className="w-full border border-slate-200 rounded-xl p-2.5 font-semibold focus:outline-none focus:border-blue-500 bg-slate-50/30 resize-none"
+                ></textarea>
+              </div>
+
             </div>
-          ))}
+
+            <button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-3 rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5">
+              + Commit Inventory Node
+            </button>
+          </form>
         </div>
+
+        {/* RIGHT COMPONENT: REAL-TIME CATALOG INVENTORY DIRECTORY LIST */}
+        <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-xs xl:col-span-2 space-y-4">
+          <div>
+            <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5">
+              <BookOpen className="text-slate-600 w-4 h-4" /> Global Catalog Directory
+            </h3>
+            <p className="text-[11px] text-slate-400 mt-0.5">Real-time status of all catalog entities inside the community database storage maps.</p>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-16 text-xs font-bold text-slate-300 animate-pulse">Syncing core schema registry inventories...</div>
+          ) : (
+            <div className="overflow-x-auto border border-slate-50 rounded-xl max-h-[550px] overflow-y-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-slate-50/70 border-b border-slate-100 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+                    <th className="p-3.5">Cover Image Preview</th>
+                    <th className="p-3.5">Book Metadata Information</th>
+                    <th className="p-3.5">Genre Classification</th>
+                    <th className="p-3.5 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50 text-slate-700 font-medium">
+                  {books.length > 0 ? (
+                    books.map(book => (
+                      <tr key={book.id} className="hover:bg-slate-50/30 transition-colors">
+                        <td className="p-3.5">
+                          {/* PREVIEW CONTAINER LOGIC VERIFICATION CHECK */}
+                          <img 
+                            src={book.cover_image} 
+                            alt="" 
+                            className="w-9 h-12 object-cover rounded shadow-2xs bg-slate-100 border border-slate-100/50"
+                          />
+                        </td>
+                        <td className="p-3.5 max-w-[240px]">
+                          <p className="font-black text-slate-800 truncate">{book.title}</p>
+                          <p className="text-slate-400 text-[11px] font-semibold truncate">by {book.author} ({book.publication_year})</p>
+                          <p className="text-[10px] text-slate-400 mt-0.5 font-bold tracking-tight">{book.total_pages} pages total</p>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-bold uppercase tracking-wider text-[9px]">
+                            {book.genre}
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-center">
+                          <button
+                            onClick={() => handleDeleteBook(book.id)}
+                            className="p-2 border border-slate-100 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all"
+                            title="Drop Asset record from schema matrix grid"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" className="text-center py-12 text-slate-400 font-bold">
+                        Central library database storage grid currently contains zero item rows.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
       </div>
 
     </div>

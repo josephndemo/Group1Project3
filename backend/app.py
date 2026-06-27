@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
-from models import db, User, Book, BookshelfItem
+from models import db, User, Book, BookshelfItem, Comment
 from sqlalchemy.sql import func
 import os
 
@@ -9,7 +9,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookshelf_hub.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'super_secret_session_encryption_key_matrix'
 
-# Strict security origin alignment matching development ports
 CORS(app, supports_credentials=True, origins=["http://localhost:5173", "http://127.0.0.1:5173"])
 db.init_app(app)
 
@@ -70,10 +69,8 @@ def handle_books():
                 return jsonify([]), 200
             return jsonify([b.to_dict() for b in books]), 200
         except Exception as e:
-            print(f"❌ DATABASE ERROR ENCOUNTERED: {str(e)}")
             return jsonify({"error": "Failed to read database catalog records", "details": str(e)}), 500
         
-    # POST - Create New Book Record
     user_id = session.get('user_id')
     user = User.query.get(user_id) if user_id else None
     if not user or user.role != 'admin':
@@ -109,7 +106,7 @@ def modify_master_book(book_id):
     if request.method == 'DELETE':
         db.session.delete(book)
         db.session.commit()
-        return jsonify({"message": "Book structure dropped clean from database storage grid."}), 200
+        return jsonify({"message": "Book structure dropped clean."}), 200
 
     try:
         data = request.get_json()
@@ -151,7 +148,6 @@ def manage_bookshelf():
     per_page = int(request.args.get('per_page', 8))
 
     query = BookshelfItem.query.filter_by(user_id=user_id)
-
     if status_filter:
         query = query.filter(BookshelfItem.status == status_filter)
 
@@ -161,7 +157,6 @@ def manage_bookshelf():
         query = query.order_by(BookshelfItem.date_added.desc())
 
     paginated_data = query.paginate(page=page, per_page=per_page, error_out=False)
-    
     return jsonify({
         "page": page,
         "per_page": per_page,
@@ -201,7 +196,41 @@ def modify_bookshelf_item(item_id):
         db.session.commit()
         return jsonify(item.to_dict()), 200
     except Exception as e:
-        return jsonify({"error": "Failed to update bookshelf progress", "details": str(e)}), 400
+        return jsonify({"error": "Failed to update progress", "details": str(e)}), 400
+
+
+# --- BOOK CLUB DISCUSSION SYSTEM ---
+
+@app.route('/api/comments', methods=['GET', 'POST'])
+def handle_comments():
+    if request.method == 'GET':
+        book_id = request.args.get('book_id')
+        if book_id:
+            comments = Comment.query.filter_by(book_id=book_id).order_by(Comment.created_at.desc()).all()
+        else:
+            comments = Comment.query.order_by(Comment.created_at.desc()).all()
+        return jsonify([c.to_dict() for c in comments]), 200
+
+    # POST - Write new book club note string
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"error": "Authentication required to post comments"}), 401
+
+    data = request.get_json()
+    if not data or 'book_id' not in data or 'text' not in data or not data['text'].strip():
+        return jsonify({"error": "Comment context can not be empty"}), 400
+
+    try:
+        new_comment = Comment(
+            user_id=user_id,
+            book_id=int(data['book_id']),
+            text=data['text'].strip()
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+        return jsonify(new_comment.to_dict()), 201
+    except Exception as e:
+        return jsonify({"error": "Failed to log message", "details": str(e)}), 400
 
 
 @app.route('/api/dashboard/analytics', methods=['GET'])

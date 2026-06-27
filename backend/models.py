@@ -8,7 +8,7 @@ db = SQLAlchemy()
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     
-    serialize_rules = ('-password_hash', '-bookshelf_items.user')
+    serialize_rules = ('-password_hash', '-bookshelf_items.user', '-comments.user')
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -17,7 +17,9 @@ class User(db.Model, SerializerMixin):
     role = db.Column(db.String(20), default='user')
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
+    # Relationships
     bookshelf_items = db.relationship('BookshelfItem', backref='user', lazy=True, cascade="all, delete-orphan")
+    comments = db.relationship('Comment', backref='user', lazy=True, cascade="all, delete-orphan")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -37,7 +39,7 @@ class User(db.Model, SerializerMixin):
 class Book(db.Model, SerializerMixin):
     __tablename__ = 'books'
     
-    serialize_rules = ('-bookshelf_instances',)
+    serialize_rules = ('-bookshelf_instances', '-comments.book')
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
@@ -48,7 +50,9 @@ class Book(db.Model, SerializerMixin):
     publication_year = db.Column(db.Integer, default=2026)
     total_pages = db.Column(db.Integer, default=100)
 
+    # Relationships
     bookshelf_instances = db.relationship('BookshelfItem', backref='book', lazy=True, cascade="all, delete-orphan")
+    comments = db.relationship('Comment', backref='book', lazy=True, cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
@@ -85,4 +89,28 @@ class BookshelfItem(db.Model, SerializerMixin):
             "current_page": self.current_page,
             "completion_percentage": self.completion_percentage,
             "book": self.book.to_dict() if self.book else None
+        }
+
+
+class Comment(db.Model, SerializerMixin):
+    __tablename__ = 'comments'
+    
+    serialize_rules = ('-user.comments', '-book.comments')
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
+    text = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "book_id": self.book_id,
+            "text": self.text,
+            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            "username": self.user.username if self.user else "Anonymous User",
+            "book_title": self.book.title if self.book else "Unknown Book",
+            "book_cover": self.book.cover_image if self.book else "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=500&auto=format&fit=crop&q=60"
         }
