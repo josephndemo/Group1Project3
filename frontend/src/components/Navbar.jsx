@@ -27,11 +27,15 @@ export default function Navbar({ user, currentView, setCurrentView, setUser }) {
             onClick={() => setCurrentView('home')} 
             className="flex items-center gap-2 cursor-pointer group"
           >
-            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-200 group-hover:scale-105 transition-all">
-              <BookOpen className="w-5 h-5" />
-            </div>
+          <div className="w-12 h-12 border-slate-100 flex items-center justify-center shadow-xs group-hover:scale-105 transition-all overflow-hidden">
+            <img 
+              src="/src/assets/icon1.png" 
+              alt="Book Icon" 
+              className="w-full h-full object-cover"
+            />
+          </div>
             <span className="font-black text-lg tracking-tight text-slate-800">
-              Bookshelf<span className="text-blue-600">Hub</span>
+              OpenLibrary<span className="text-blue-600">Hub</span>
             </span>
           </div>
 

@@ -22,7 +22,7 @@ export default function Login({ setUser, setCurrentView }) {
       if (res.ok) {
         const userData = await res.json();
         setUser(userData);
-        setCurrentView('shelf');
+        setCurrentView('bookshelf');
         
         Swal.fire({
           toast: true,
