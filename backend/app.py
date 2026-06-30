@@ -9,10 +9,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookshelf_hub.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'super_secret_session_encryption_key_matrix'
 
-CORS(app, supports_credentials=True, origins=["http://localhost:5173", "http://127.0.0.1:5173"])
+CORS(app)
 db.init_app(app)
 
 # --- AUTHENTICATION ENGINES ---
+
+@app.route("/")
+def home():
+    return {"status": "Backend running"}
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
@@ -262,4 +266,4 @@ def get_dashboard_analytics():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host='127.0.0.1', port=5555, debug=True)
+    app.run(debug=True)
