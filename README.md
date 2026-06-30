@@ -36,7 +36,7 @@ It combines:
 - React frontend SPA
 - Flask REST API backend
 - SQLite relational database
-- Open Library external API integration
+- Open Library API integration
 
 ### Key Capabilities
 - Dynamic book search across millions of titles
@@ -115,7 +115,6 @@ Group1Project3/
 │   │   └── index.css
 │
 └── README.md
-
 🗄️ Database Schema
 User
 id (PK)
