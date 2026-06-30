@@ -34,7 +34,7 @@ export default function Navbar({ user, currentView, setCurrentView, setUser }) {
           >
           <div className="w-12 h-12 border-slate-100 flex items-center justify-center shadow-xs group-hover:scale-105 transition-all overflow-hidden">
             <img 
-              src={bookIcon}
+              src={icon1}
               alt="Book Icon" 
               className="w-full h-full object-cover"
             />
