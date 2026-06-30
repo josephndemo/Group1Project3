@@ -1,7 +1,7 @@
 import React from 'react';
 import { BookOpen, Library, Users, LogIn, LogOut, ShieldAlert } from 'lucide-react';
 import Swal from 'sweetalert2';
-import icon1 from './assets/icon1.png';
+import icon1 from '../assets/icon1.png';
 
 export default function Navbar({ user, currentView, setCurrentView, setUser }) {
   
