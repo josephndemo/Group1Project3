@@ -1,183 +1,208 @@
 # 📚 OpenLibrary Hub
 
-A modern, responsive full-stack Single Page Application (SPA) for discovering, organizing, and tracking books using the Open Library API with a Flask backend and SQLite database.
+![GitHub repo size](https://img.shields.io/badge/Full--Stack-Project-blue)
+![Frontend](https://img.shields.io/badge/Frontend-React_19-61DBFB)
+![Backend](https://img.shields.io/badge/Backend-Flask-000000)
+![Database](https://img.shields.io/badge/Database-SQLite-003B57)
+![Deployment](https://img.shields.io/badge/Deploy-Vercel_%26_Render-green)
 
 ---
 
-## 🚀 Live Links
+## 🚀 Live Demo
 
-- 🌐 Frontend: https://openlibraryv31.vercel.app/
-- ⚙️ Backend API: https://group1project3-2.onrender.com/
-- 📦 GitHub Repo: https://github.com/josephndemo/Group1Project3
-
----
-
-## 📸 Application Preview
-
-### 💻 Home Page
-![Home Page](https://openlibraryv31.vercel.app/src/assets/preview-home.png)
-
-### 📚 Bookshelf
-![Bookshelf](https://openlibraryv31.vercel.app/src/assets/preview-shelf.png)
-
-### ❤️ Favorites
-![Favorites](https://openlibraryv31.vercel.app/src/assets/preview-favs.png)
-
-### 💬 Reviews
-![Reviews](https://openlibraryv31.vercel.app/src/assets/preview-reviews.png)
+- 🌐 **Frontend App:** https://openlibraryv31.vercel.app/
+- ⚙️ **Backend API:** https://group1project3-2.onrender.com/
+- 📦 **Source Code:** https://github.com/josephndemo/Group1Project3
 
 ---
 
-## 📋 Overview
+## 📌 Overview
 
-OpenLibrary Hub is a **Software Engineering Capstone Project** demonstrating full-stack system design using modern web technologies.
+**OpenLibrary Hub** is a production-style full-stack web application that allows users to discover books, manage personal reading lists, track reading progress, and participate in book discussions.
 
-It combines:
-- React frontend SPA
-- Flask REST API backend
-- SQLite relational database
-- Open Library API integration
+Built as a **Software Engineering Capstone Project**, it demonstrates real-world engineering practices including:
 
-### Key Capabilities
-- Dynamic book search across millions of titles
-- Personal bookshelf tracking system
-- Reading progress monitoring
-- Community book discussions
-- Admin dashboard for catalog management
-- Secure authentication system
+- RESTful API design
+- Relational database modeling
+- Authentication & session management
+- External API integration (Open Library)
+- SPA architecture with React
+- Cloud deployment (Vercel + Render)
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-### 🔍 Book Search
-- Search by title, author, or keyword
-- Debounced API requests
-- Loading states and fallback images
+### 🔍 Smart Book Search
+- Real-time search using Open Library API
+- Debounced requests to reduce API load
+- Fallback UI for missing images/data
 
-### 📚 Bookshelf
-- Want to Read / Reading / Completed states
-- Page tracking system
-- Auto completion calculation
+### 📚 Personal Bookshelf System
+- Add books to personal library
+- Track status: `Want to Read`, `Reading`, `Completed`
+- Automatic progress calculation based on page tracking
 
-### ❤️ Favorites
-- Save and revisit favorite books
+### 📊 Reading Progress Engine
+- Live progress percentage updates
+- Page-by-page tracking system
+- Auto-completion detection
 
-### ⭐ Reading Progress
-- Real-time percentage updates
-- Auto status updates when completed
+### ❤️ Favorites System
+- Save and manage favorite books
+- Quick access dashboard
 
-### 💬 Book Club
-- Book-based discussion threads
-- User comments and reviews
+### 💬 Book Discussions
+- Comment on books
+- Threaded community discussions
+- Book-specific conversation channels
 
 ### 🛡️ Admin Dashboard
 - Create, update, delete books
-- Manage catalog content
+- Manage global catalog
+- Full CRUD control over system data
+
+---
+
+## 🧠 System Architecture
+
+
+Frontend (React SPA)
+↓
+REST API (Flask)
+↓
+SQLite Database (SQLAlchemy ORM)
+↓
+Open Library API (External Data Source)
+
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|------|------------|
-| Frontend | React 19 |
-| Styling | Tailwind CSS v4 |
-| Backend | Flask (Python) |
-| Database | SQLite |
-| ORM | SQLAlchemy |
-| API | REST + Open Library API |
-| Auth | Werkzeug Security |
-| Deployment | Vercel + Render |
+### Frontend
+- React 19
+- Vite
+- Tailwind CSS v4
+- React Router
+- Axios / Fetch API
+
+### Backend
+- Flask (Python)
+- Flask-SQLAlchemy
+- Flask-CORS
+- Werkzeug Security
+
+### Database
+- SQLite (Relational DB)
+- Normalized schema design
+
+### Deployment
+- Vercel (Frontend)
+- Render (Backend API)
 
 ---
 
-## 📁 Project Structure
+## 🗄️ Database Schema
 
-```text
-Group1Project3/
-├── backend/
-│   ├── app.py
-│   ├── models.py
-│   ├── seed.py
-│   ├── requirements.txt
-│   └── instance/
-│       └── bookshelf_hub.db
-│
-├── frontend/
-│   ├── src/
-│   │   ├── assets/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── features/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│
-└── README.md
-🗄️ Database Schema
-User
-id (PK)
-username
-email
-password_hash
-role
-Book
-id (PK)
-title
-author
-genre
-description
-cover_image
-total_pages
-BookshelfItem
-id (PK)
-user_id (FK)
-book_id (FK)
-status
-current_page
-completion_percentage
-Comment
-id (PK)
-user_id (FK)
-book_id (FK)
-text
-created_at
-⚡ REST API
-Base URL
+### 👤 User
+- id (PK)
+- username
+- email
+- password_hash
+- role
+
+### 📖 Book
+- id (PK)
+- title
+- author
+- genre
+- description
+- cover_image
+- total_pages
+
+### 📚 BookshelfItem
+- id (PK)
+- user_id (FK)
+- book_id (FK)
+- status
+- current_page
+- completion_percentage
+
+### 💬 Comment
+- id (PK)
+- user_id (FK)
+- book_id (FK)
+- text
+- created_at
+
+---
+
+## ⚡ API Reference
+
+### Base URL
+
 https://group1project3-2.onrender.com
-🔐 Authentication
-Method	Endpoint	Description
-POST	/api/signup	Register user
-POST	/api/login	Login user
-POST	/api/logout	Logout user
-GET	/api/me	Get current user
-📚 Books
-Method	Endpoint
-GET	/api/books
-POST	/api/books
-PATCH	/api/books/:id
-DELETE	/api/books/:id
-📖 Bookshelf
-Method	Endpoint
-GET	/api/bookshelf
-POST	/api/bookshelf
-PATCH	/api/bookshelf/:id
-DELETE	/api/bookshelf/:id
-💬 Comments
-Method	Endpoint
-GET	/api/comments
-POST	/api/comments
-PATCH	/api/comments/:id
-DELETE	/api/comments/:id
-⚙️ Installation
-1. Clone Repository
+
+
+---
+
+### 🔐 Authentication
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/signup | Register user |
+| POST | /api/login | Login user |
+| POST | /api/logout | Logout user |
+| GET | /api/me | Get current session user |
+
+---
+
+### 📚 Books
+
+| Method | Endpoint |
+|--------|----------|
+| GET | /api/books |
+| POST | /api/books |
+| PATCH | /api/books/:id |
+| DELETE | /api/books/:id |
+
+---
+
+### 📖 Bookshelf
+
+| Method | Endpoint |
+|--------|----------|
+| GET | /api/bookshelf |
+| POST | /api/bookshelf |
+| PATCH | /api/bookshelf/:id |
+| DELETE | /api/bookshelf/:id |
+
+---
+
+### 💬 Comments
+
+| Method | Endpoint |
+|--------|----------|
+| GET | /api/comments |
+| POST | /api/comments |
+| PATCH | /api/comments/:id |
+| DELETE | /api/comments/:id |
+
+---
+
+## ⚙️ Getting Started
+
+### 1️⃣ Clone Repository
+```bash
 git clone https://github.com/josephndemo/Group1Project3.git
 cd Group1Project3
-🧠 Backend Setup
+2️⃣ Backend Setup
 cd backend
+
 python3 -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
+source venv/bin/activate
+
 pip install -r requirements.txt
 python3 seed.py
 python3 app.py
@@ -185,8 +210,9 @@ python3 app.py
 Backend runs at:
 
 http://localhost:5555
-🌐 Frontend Setup
+3️⃣ Frontend Setup
 cd frontend
+
 npm install
 npm run dev
 
@@ -194,17 +220,20 @@ Frontend runs at:
 
 http://localhost:5173
 🌍 Deployment
-Service	URL
-Frontend	https://openlibraryv31.vercel.app/
-Backend	https://group1project3-2.onrender.com/
-🔮 Future Improvements
-AI book recommendations
+Layer	Platform	URL
+Frontend	Vercel	https://openlibraryv31.vercel.app/
+Backend	Render	https://group1project3-2.onrender.com/
+
+🔮 Future Enhancements
+AI-powered book recommendations
 Dark mode UI
 Real-time chat (WebSockets)
-User profiles
+Advanced search filtering
+User profiles & social features
 Email notifications
-Advanced search filters
-👥 Team
+Mobile app (React Native)
+
+👨‍💻 Contributors
 Joseph Ndemo
 Mark Warunge
 Gregory Kipchumba
