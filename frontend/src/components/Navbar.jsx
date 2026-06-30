@@ -1,6 +1,7 @@
 import React from 'react';
 import { BookOpen, Library, Users, LogIn, LogOut, ShieldAlert } from 'lucide-react';
 import Swal from 'sweetalert2';
+import icon1 from './assets/icon1.png';
 
 export default function Navbar({ user, currentView, setCurrentView, setUser }) {
   
@@ -17,6 +18,10 @@ export default function Navbar({ user, currentView, setCurrentView, setUser }) {
     }
   };
 
+  function MyComponent() {
+  return <img src={icon1} alt="Icon" />;
+}
+
   return (
     <nav className="bg-white border-b border-slate-100 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,7 +34,7 @@ export default function Navbar({ user, currentView, setCurrentView, setUser }) {
           >
           <div className="w-12 h-12 border-slate-100 flex items-center justify-center shadow-xs group-hover:scale-105 transition-all overflow-hidden">
             <img 
-              src="/src/assets/icon1.png" 
+              src={bookIcon}
               alt="Book Icon" 
               className="w-full h-full object-cover"
             />
