@@ -12,7 +12,7 @@ export default function MyBookshelf({ user }) {
     setLoading(true);
     
     // Fetch user's bookshelf records from the backend database
-    fetch('http://localhost:5555/api/bookshelf', { credentials: 'include' })
+    fetch('https://group1project3-2.onrender.com/api/bookshelf', { credentials: 'include' })
       .then(res => res.ok ? res.json() : { data: [] })
       .then(resData => {
         setShelfItems(resData.data || []);
@@ -65,7 +65,7 @@ export default function MyBookshelf({ user }) {
       }
 
       try {
-        const res = await fetch(`http://localhost:5555/api/bookshelf/${itemId}`, {
+        const res = await fetch(`https://group1project3-2.onrender.com/api/bookshelf/${itemId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),

@@ -8,6 +8,10 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookshelf_hub.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'super_secret_session_encryption_key_matrix'
+app.config.update(
+    SESSION_COOKIE_SECURE=True,    # Required since your backend is HTTPS (Render)
+    SESSION_COOKIE_SAMESITE='None' # Allows localhost to receive the cookie from Render
+)
 
 
 app.config['CORS_HEADERS'] = 'Content-Type'
