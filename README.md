@@ -1,208 +1,242 @@
-# OpenLibrary Hub
+# 📚 OpenLibrary Hub
 
-A modern, responsive full-stack Single Page Application (SPA) for discovering, organizing, and tracking books using the Open Library API paired with a secure relational backend data layer.
-
-OpenLibrary Hub enables readers to search millions of books, manage personalized reading lists, save favorites, rate books, track reading progress percentages, and participate in live community book club discussions—all within a streamlined and intuitive user experience.
-
----
-
-## Overview
-
-OpenLibrary Hub was developed as a Software Engineering Capstone Project with a focus on:
-
-* **Full-Stack Relational Architecture**: Robust Python Flask backend paired with a structured SQLite database.
-* **Modern React Frontend**: Clean, highly reactive interface styled with Tailwind CSS v4.
-* **Dynamic Bookshelf Metrics**: Real-time page accumulation trackers and automated completion percentage gauges.
-* **Live Community Discussions**: Channelized book club discussion spaces mapped directly to explicit inventory entries.
-* **State Management & Authentication**: Custom relational backref structures tracking unique individual data arrays.
-
-The application integrates with the Open Library REST API to provide access to bibliographic records, while caching personal collection schemas on a dedicated local database storage subsystem.
+![GitHub repo size](https://img.shields.io/badge/Full--Stack-Project-blue)
+![Frontend](https://img.shields.io/badge/Frontend-React_19-61DBFB)
+![Backend](https://img.shields.io/badge/Backend-Flask-000000)
+![Database](https://img.shields.io/badge/Database-SQLite-003B57)
+![Deployment](https://img.shields.io/badge/Deploy-Vercel_%26_Render-green)
 
 ---
 
-## Deployed Application Link
+## 🚀 Live Demo
 
-https://openlibrary-one.vercel.app/
-
-## Application Preview
-
-> Add screenshots of your application here.
-
-### Home Page
-![Home Page](./src/assets/home-page.png)
-
-### Bookshelf Tracker
-![Bookshelf](./src/assets/bookshelf.png)
-
-### Favorites
-![Favorites](./src/assets/favorites.png)
-
-### Reviews & Notes
-![Reviews](./src/assets/reviews.png)
+- 🌐 **Frontend App:** https://openlibraryv31.vercel.app/
+- ⚙️ **Backend API:** https://group1project3-2.onrender.com/
+- 📦 **Source Code:** https://github.com/josephndemo/Group1Project3
 
 ---
 
-## Features
+## 📌 Overview
 
-### 🔍 Real-Time Book Search
-* Search books by title, author, or keyword using the Open Library API.
-* Debounced search requests (600ms delay) to dramatically reduce redundant networking bandwidth overhead.
-* Graceful loading states, network timeout handling, and fallback placeholder artwork rendering.
+**OpenLibrary Hub** is a production-style full-stack web application that allows users to discover books, manage personal reading lists, track reading progress, and participate in book discussions.
 
-### 📚 Personal Bookshelf Progress Gauge
-* Save books to a personal reading collection with structured states (`Want to Read`, `Reading`, `Completed`).
-* Granular step metrics tracking exact current page values relative to the volume's total capacity.
-* Automated UI progression animations updating calculated completion percentages instantly.
+Built as a **Software Engineering Capstone Project**, it demonstrates real-world engineering practices including:
 
-### 💬 Active Book Club Channels
-* Dynamic live discussion spaces automatically indexed to specific book volumes.
-* Sidebar channel views listing active discussions ordered explicitly by comment density metrics.
-* Direct integration allowing users to click an item in their reading status list to instantly switch channels and broadcast context notes.
-
-### 🛡️ Administrative Console
-* Restricted structural dashboard for managing platform assets.
-* Full CRUD control over the master catalog, including custom image URL injections, page definitions, and abstract summaries.
-* Cascading deletion algorithms that clear orphan comment tracking blocks if an inventory record is purged.
+- RESTful API design
+- Relational database modeling
+- Authentication & session management
+- External API integration (Open Library)
+- SPA architecture with React
+- Cloud deployment (Vercel + Render)
 
 ---
 
-## Technology Stack
+## ✨ Key Features
 
-| Layer | Component | Description |
-| :--- | :--- | :--- |
-| **Frontend** | React 19 | Declarative UI layer utilizing stateful hooks |
-| **Styling & Assets** | Tailwind CSS v4 + Lucide | Utility-first compilation design with clean vector iconography |
-| **Build Tool** | Vite | Rapid module replacement development server compilation |
-| **Backend Framework** | Flask / Python 3 | Lightweight RESTful routing pipeline |
-| **Database Engine** | SQLite | Relational file-based database architecture |
-| **ORM Layer** | Flask-SQLAlchemy | Object-Relational Mapper capturing declarative schemas |
-| **Serialization** | SQLAlchemy-Serializer | Handles dynamic nesting structure translation to clean JSON payloads |
-| **Security Layer** | Werkzeug | High-fidelity PBKDF2 password hashing vectors |
+### 🔍 Smart Book Search
+- Real-time search using Open Library API
+- Debounced requests to reduce API load
+- Fallback UI for missing images/data
+
+### 📚 Personal Bookshelf System
+- Add books to personal library
+- Track status: `Want to Read`, `Reading`, `Completed`
+- Automatic progress calculation based on page tracking
+
+### 📊 Reading Progress Engine
+- Live progress percentage updates
+- Page-by-page tracking system
+- Auto-completion detection
+
+### ❤️ Favorites System
+- Save and manage favorite books
+- Quick access dashboard
+
+### 💬 Book Discussions
+- Comment on books
+- Threaded community discussions
+- Book-specific conversation channels
+
+### 🛡️ Admin Dashboard
+- Create, update, delete books
+- Manage global catalog
+- Full CRUD control over system data
 
 ---
 
-## Project Structure
+## 🧠 System Architecture
 
-```text
-capstone_library/
-├── backend/
-│   ├── instance/
-│   │   └── bookshelf_hub.db      # SQLite relational database storage file
-│   ├── app.py                   # Central server pipeline, API controllers, and route handling
-│   ├── models.py                # Declarative SQLAlchemy models (User, Book, BookshelfItem, Comment)
-│   ├── seed.py                  # Database flushing and multi-profile catalog generation script
-│   └── requirements.txt         # Backend environment package specifications
-└── frontend/
-    ├── public/
-    └── src/
-        ├── assets/
-        │   └── icon1.png        # Upsized custom platform logo asset
-        ├── components/
-        │   ├── Navbar.jsx
-        │   └── Footer.jsx
-        ├── features/
-        │   └── books/
-        │       ├── BookCard.jsx
-        │       ├── BookGrid.jsx
-        │       └── bookService.js
-        ├── pages/
-        │   ├── AdminPanel.jsx   # Administrative catalog management form
-        │   ├── BookClub.jsx     # Live context streaming discussion panel
-        │   ├── MyBookshelf.jsx  # Interactive reading progress workspace
-        │   └── Home.jsx
-        ├── App.jsx
-        ├── index.css
-        └── main.jsx
-Relational Database Schema Design
-The backend persistence layer utilizes an SQLite database structured around four highly normalized relational models with cascading dependencies:
 
-User: Manages credentials, privilege roles, and holds one-to-many relationships out to bookshelf entries and reviews.
+Frontend (React SPA)
+↓
+REST API (Flask)
+↓
+SQLite Database (SQLAlchemy ORM)
+↓
+Open Library API (External Data Source)
 
-Book: Tracks global catalog data items (Title, Author, Pages, Cover Image Source URL).
 
-BookshelfItem: A join table mapping a User to a Book with metadata attributes tracking progress metrics (current_page, status, completion_percentage).
+---
 
-Comment: A transactional record linking unique user notes to specific book channel frameworks.
+## 🛠️ Tech Stack
 
-Getting Started
-Prerequisites
-Node.js (v18 or later) & npm
+### Frontend
+- React 19
+- Vite
+- Tailwind CSS v4
+- React Router
+- Axios / Fetch API
 
-Python (v3.8 or later)
+### Backend
+- Flask (Python)
+- Flask-SQLAlchemy
+- Flask-CORS
+- Werkzeug Security
 
-pip (Python package installer)
+### Database
+- SQLite (Relational DB)
+- Normalized schema design
 
-1. Backend Workspace Initialization
-Navigate to your backend directory, construct a virtual environment, install your dependencies, and initialize your database structure using the seed manager:
+### Deployment
+- Vercel (Frontend)
+- Render (Backend API)
 
-Bash
+---
+
+## 🗄️ Database Schema
+
+### 👤 User
+- id (PK)
+- username
+- email
+- password_hash
+- role
+
+### 📖 Book
+- id (PK)
+- title
+- author
+- genre
+- description
+- cover_image
+- total_pages
+
+### 📚 BookshelfItem
+- id (PK)
+- user_id (FK)
+- book_id (FK)
+- status
+- current_page
+- completion_percentage
+
+### 💬 Comment
+- id (PK)
+- user_id (FK)
+- book_id (FK)
+- text
+- created_at
+
+---
+
+## ⚡ API Reference
+
+### Base URL
+
+https://group1project3-2.onrender.com
+
+
+---
+
+### 🔐 Authentication
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/signup | Register user |
+| POST | /api/login | Login user |
+| POST | /api/logout | Logout user |
+| GET | /api/me | Get current session user |
+
+---
+
+### 📚 Books
+
+| Method | Endpoint |
+|--------|----------|
+| GET | /api/books |
+| POST | /api/books |
+| PATCH | /api/books/:id |
+| DELETE | /api/books/:id |
+
+---
+
+### 📖 Bookshelf
+
+| Method | Endpoint |
+|--------|----------|
+| GET | /api/bookshelf |
+| POST | /api/bookshelf |
+| PATCH | /api/bookshelf/:id |
+| DELETE | /api/bookshelf/:id |
+
+---
+
+### 💬 Comments
+
+| Method | Endpoint |
+|--------|----------|
+| GET | /api/comments |
+| POST | /api/comments |
+| PATCH | /api/comments/:id |
+| DELETE | /api/comments/:id |
+
+---
+
+## ⚙️ Getting Started
+
+### 1️⃣ Clone Repository
+```bash
+git clone https://github.com/josephndemo/Group1Project3.git
+cd Group1Project3
+2️⃣ Backend Setup
 cd backend
 
-# Initialize your Python isolation layer environment
 python3 -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
+source venv/bin/activate
 
-# Install requirements
 pip install -r requirements.txt
-
-# Execute database migration and load user/catalog seeds
 python3 seed.py
-2. Frontend Workspace Initialization
-Open a secondary terminal window, navigate to the frontend directory, compile package assets, and spin up your local compilation development engine:
+python3 app.py
 
-Bash
+Backend runs at:
+
+http://localhost:5555
+3️⃣ Frontend Setup
 cd frontend
 
-# Pull node packages
 npm install
-
-# Initialize development hot-module engine loop
 npm run dev
-3. Verification
-Backend Engine Pipeline: Running on http://localhost:5555/
 
-Frontend Component Dashboard: Running on http://localhost:5173/
+Frontend runs at:
 
-Core Engineering Concepts
-Declarative Relational Models (SQLAlchemy)
-The SQLite backplane relies on strict structural models enforced at the schema engine layer:
+http://localhost:5173
+🌍 Deployment
+Layer	Platform	URL
+Frontend	Vercel	https://openlibraryv31.vercel.app/
+Backend	Render	https://group1project3-2.onrender.com/
 
-Python
-class BookshelfItem(db.Model, SerializerMixin):
-    __tablename__ = 'bookshelf_items'
-    serialize_rules = ('-user.bookshelf_items', '-book.bookshelf_instances')
+🔮 Future Enhancements
+AI-powered book recommendations
+Dark mode UI
+Real-time chat (WebSockets)
+Advanced search filtering
+User profiles & social features
+Email notifications
+Mobile app (React Native)
 
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
-    status = db.Column(db.String(30), default='Want to Read')
-    current_page = db.Column(db.Integer, default=0)
-    completion_percentage = db.Column(db.Float, default=0.0)
-Dynamic Progress Updates
-Frontend components capture modifications via precise PATCH requests that target relational asset routes to update database models on the fly:
-
-JavaScript
-const payload = { current_page: pageNum };
-if (pageNum > 0 && pageNum < totalPages && currentStatus === 'Want to Read') {
-  payload.status = 'Reading';
-}
-
-const res = await fetch(`https://group1project3-2.onrender.com/api/bookshelf/${itemId}`, {
-  method: 'PATCH',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(payload),
-  credentials: 'include'
-});
-
-Developer Team
-Joseph Ndemo 
-
+👨‍💻 Contributors
+Joseph Ndemo
 Mark Warunge
-
 Gregory Kipchumba
-
 Abdirahman Abdi Salah
-
 Robert Maina
-
 Rotich Ian
