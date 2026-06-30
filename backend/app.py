@@ -23,7 +23,7 @@ CORS(
     resources={r"/api/*": {
         "origins": [
             "http://localhost:5173", 
-            "https://openlibraryv31.vercel.app/"
+            "https://openlibraryv31.vercel.app"
         ]
     }}
 )
