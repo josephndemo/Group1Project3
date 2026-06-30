@@ -41,7 +41,7 @@ Group1Project3/
 │   └── package.json         # Frontend dependencies
 │
 └── README.md
-📌 Overview
+## 📌 Overview
 
 OpenLibrary Hub is a full-stack reading platform that allows users to:
 
@@ -55,7 +55,7 @@ Administer book catalog (admin users)
 
 Built using modern full-stack architecture principles.
 
-✨ Features
+## ✨ Features
 🔍 Book Search
 Live search using Open Library API
 Debounced requests for performance
@@ -64,18 +64,23 @@ Fallback UI for missing data
 Want to Read / Reading / Completed states
 Progress tracking per book
 Automatic completion calculation
+
 ❤️ Favorites
 Save and manage favorite books
+
 ⭐ Reading Progress
 Page-based progress tracking
 Auto status updates when completed
+
 💬 Book Discussions
 Comment system per book
 User-generated discussions
+
 🛡️ Admin Dashboard
 Add, update, delete books
 Manage catalog content
-🛠️ Tech Stack
+
+## 🛠️ Tech Stack
 Frontend
 React 19
 Vite
@@ -91,7 +96,8 @@ SQLite (Relational DB)
 Deployment
 Vercel (Frontend)
 Render (Backend)
-🗄️ Database Schema
+
+## 🗄️ Database Schema
 User
 id (PK)
 username
@@ -174,18 +180,20 @@ npm run dev
 Frontend runs at:
 http://localhost:5173
 
-🌍 Deployment
+## 🌍 Deployment
 Service	URL
 Frontend	https://openlibraryv31.vercel.app/
 Backend	https://group1project3-2.onrender.com/
-🔮 Future Improvements
+
+## 🔮 Future Improvements
 AI book recommendations
 Dark mode UI
 Real-time chat (WebSockets)
 User profiles
 Email notifications
 Advanced search filters
-👥 Contributors
+
+## 👥 Contributors
 Joseph Ndemo
 Mark Warunge
 Gregory Kipchumba
