@@ -41,6 +41,9 @@ Group1Project3/
 │   └── package.json         # Frontend dependencies
 │
 └── README.md
+
+
+
 📌 Overview
 
 OpenLibrary Hub is a full-stack reading platform that allows users to:
@@ -52,8 +55,6 @@ Write reviews and comments
 Manage favorites
 Participate in book discussions
 Administer book catalog (admin users)
-
-Built using modern full-stack architecture principles.
 
 ✨ Features
 🔍 Book Search
@@ -75,6 +76,7 @@ User-generated discussions
 🛡️ Admin Dashboard
 Add, update, delete books
 Manage catalog content
+
 🛠️ Tech Stack
 Frontend
 React 19
@@ -91,6 +93,7 @@ SQLite (Relational DB)
 Deployment
 Vercel (Frontend)
 Render (Backend)
+
 🗄️ Database Schema
 User
 id (PK)
@@ -130,24 +133,28 @@ POST	/api/signup	Register user
 POST	/api/login	Login user
 POST	/api/logout	Logout user
 GET	/api/me	Get current user
+
 📚 Books
 Method	Endpoint
 GET	/api/books
 POST	/api/books
 PATCH	/api/books/:id
 DELETE	/api/books/:id
+
 📖 Bookshelf
 Method	Endpoint
 GET	/api/bookshelf
 POST	/api/bookshelf
 PATCH	/api/bookshelf/:id
 DELETE	/api/bookshelf/:id
+
 💬 Comments
 Method	Endpoint
 GET	/api/comments
 POST	/api/comments
 PATCH	/api/comments/:id
 DELETE	/api/comments/:id
+
 ⚙️ Installation
 1. Clone Repository
 git clone https://github.com/josephndemo/Group1Project3.git
@@ -178,6 +185,7 @@ http://localhost:5173
 Service	URL
 Frontend	https://openlibraryv31.vercel.app/
 Backend	https://group1project3-2.onrender.com/
+
 🔮 Future Improvements
 AI book recommendations
 Dark mode UI
@@ -185,6 +193,7 @@ Real-time chat (WebSockets)
 User profiles
 Email notifications
 Advanced search filters
+
 👥 Contributors
 Joseph Ndemo
 Mark Warunge
