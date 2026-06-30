@@ -187,7 +187,7 @@ if (pageNum > 0 && pageNum < totalPages && currentStatus === 'Want to Read') {
   payload.status = 'Reading';
 }
 
-const res = await fetch(`http://localhost:5555/api/bookshelf/${itemId}`, {
+const res = await fetch(`https://group1project3-2.onrender.com/api/bookshelf/${itemId}`, {
   method: 'PATCH',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(payload),

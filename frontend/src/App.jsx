@@ -11,7 +11,7 @@ export default function App() {
   const [currentView, setCurrentView] = useState('home');
 
   useEffect(() => {
-    fetch('http://localhost:5555/api/me', { credentials: 'include' })
+    fetch('https://group1project3-2.onrender.com/api/me', { credentials: 'include' })
       .then(res => res.ok ? res.json() : null)
       .then(data => setUser(data));
   }, []);

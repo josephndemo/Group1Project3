@@ -13,14 +13,14 @@ export default function BookClub({ user }) {
   // 1. Fetch Master Channels, Active Feeds, and Personal Shelf Items
   const loadDataChannels = () => {
     const fetchTargets = [
-      fetch('http://localhost:5555/api/books').then(res => res.json()),
-      fetch('http://localhost:5555/api/comments').then(res => res.json())
+      fetch('https://group1project3-2.onrender.com/api/books').then(res => res.json()),
+      fetch('https://group1project3-2.onrender.com/api/comments').then(res => res.json())
     ];
 
     // Append personalized shelf indices if an active session exists
     if (user) {
       fetchTargets.push(
-        fetch('http://localhost:5555/api/bookshelf', { credentials: 'include' }).then(res => res.json())
+        fetch('https://group1project3-2.onrender.com/api/bookshelf', { credentials: 'include' }).then(res => res.json())
       );
     }
 
@@ -62,7 +62,7 @@ export default function BookClub({ user }) {
     e.preventDefault();
     if (!commentText.trim() || !activeBookId) return;
 
-    const res = await fetch('http://localhost:5555/api/comments', {
+    const res = await fetch('https://group1project3-2.onrender.com/api/comments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ book_id: activeBookId, text: commentText }),
@@ -72,7 +72,7 @@ export default function BookClub({ user }) {
     if (res.ok) {
       setCommentText('');
       // Refresh only the comment cache vector to avoid full panel blinking animations
-      fetch('http://localhost:5555/api/comments')
+      fetch('https://group1project3-2.onrender.com/api/comments')
         .then(res => res.json())
         .then(data => setAllComments(data));
         

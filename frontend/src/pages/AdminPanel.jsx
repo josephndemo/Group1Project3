@@ -17,7 +17,7 @@ export default function AdminPanel() {
 
   const fetchBooks = () => {
     setLoading(true);
-    fetch('http://localhost:5555/api/books')
+    fetch('https://group1project3-2.onrender.com/api/books')
       .then(res => res.json())
       .then(data => setBooks(data))
       .catch(err => console.error("Error loading admin catalog:", err))
@@ -42,7 +42,7 @@ export default function AdminPanel() {
       total_pages: parseInt(totalPages) || 100
     };
 
-    const res = await fetch('http://localhost:5555/api/books', {
+    const res = await fetch('https://group1project3-2.onrender.com/api/books', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -79,7 +79,7 @@ export default function AdminPanel() {
     });
 
     if (confirmation.isConfirmed) {
-      const res = await fetch(`http://localhost:5555/api/books/${bookId}`, {
+      const res = await fetch(`https://group1project3-2.onrender.com/api/books/${bookId}`, {
         method: 'DELETE',
         credentials: 'include'
       });

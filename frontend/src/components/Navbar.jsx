@@ -6,7 +6,7 @@ export default function Navbar({ user, currentView, setCurrentView, setUser }) {
   
   const handleLogout = async () => {
     try {
-      const res = await fetch('http://localhost:5555/api/logout', { method: 'POST', credentials: 'include' });
+      const res = await fetch('https://group1project3-2.onrender.com/api/logout', { method: 'POST', credentials: 'include' });
       if (res.ok) {
         setUser(null);
         setCurrentView('home');

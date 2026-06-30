@@ -9,7 +9,20 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookshelf_hub.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'super_secret_session_encryption_key_matrix'
 
-CORS(app)
+
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+
+CORS(
+    app,
+    supports_credentials=True,
+    resources={r"/api/*": {
+        "origins": [
+            "http://localhost:5173", 
+            "https://your-vercel-app.vercel.app"
+        ]
+    }}
+)
 db.init_app(app)
 
 # --- AUTHENTICATION ENGINES ---

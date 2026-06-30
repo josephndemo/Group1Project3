@@ -6,7 +6,7 @@ export default function Dashboard() {
   const [genres, setGenres] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5555/api/dashboard/analytics', { credentials: 'include' })
+    fetch('https://group1project3-2.onrender.com/api/dashboard/analytics', { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         if (!data.error) {

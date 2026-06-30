@@ -12,7 +12,7 @@ export default function Login({ setUser, setCurrentView }) {
     setLoading(true);
     
     try {
-      const res = await fetch('http://localhost:5555/api/login', {
+      const res = await fetch('https://group1project3-2.onrender.com/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

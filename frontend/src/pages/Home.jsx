@@ -8,14 +8,14 @@ export default function Home({ user, setCurrentView }) {
 
   useEffect(() => {
     // 1. Fetch available books catalog
-    fetch('http://localhost:5555/api/books')
+    fetch('https://group1project3-2.onrender.com/api/books')
       .then(res => res.json())
       .then(data => setBooks(data))
       .catch(err => console.error("Error loading library items:", err));
 
     // 2. Fetch analytics summary metrics if logged in
     if (user) {
-      fetch('http://localhost:5555/api/dashboard/analytics', { credentials: 'include' })
+      fetch('https://group1project3-2.onrender.com/api/dashboard/analytics', { credentials: 'include' })
         .then(res => res.ok ? res.json() : null)
         .then(data => setAnalytics(data))
         .catch(err => console.error("Error loading metrics:", err));
@@ -29,7 +29,7 @@ export default function Home({ user, setCurrentView }) {
       return;
     }
 
-    const res = await fetch('http://localhost:5555/api/bookshelf', {
+    const res = await fetch('https://group1project3-2.onrender.com/api/bookshelf', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ book_id: bookId, status: 'Want to Read' }),
